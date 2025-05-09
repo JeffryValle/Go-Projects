@@ -41,7 +41,12 @@ func main() {
 }
 
 func mapas() {
-
+	/*
+		Internamente, Go necesita poder comparar llaves
+		para hacer búsquedas en el mapa, y como los slices
+		son estructuras dinámicas que contienen punteros
+		a arrays, Go no sabe cómo compararlos directamente.
+	*/
 	statePopulations := map[string]int{
 		"Olancho":       1319465,
 		"Cortes":        2546863,
@@ -49,6 +54,11 @@ func mapas() {
 		"Comayagua":     3687853,
 		"Choluteca":     1328778,
 	}
-	m := map[[]int]string{}
+	// statePopulations["Copan"] = 1212146
+	// delete(statePopulations, "Copan")
+	sp := statePopulations
+	delete(sp, "Cortes")
+	// fmt.Println(statePopulations)
+	fmt.Println(sp)
 	fmt.Println(statePopulations)
 }
