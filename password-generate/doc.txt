@@ -1,0 +1,57 @@
+#1 Función HashPassword()
+Esta funcion recibirá la contraseña que queremos encriptar,
+donde el tipo de dato será string
+No podemos generar un string mayor a 72bytes, es la cantidad máxima de caracteres
+
+declaramos las variables: bytes, err
+[]bytes(password) : esta funcion convierte el string a un slice de bytes 
+cost: el "costo" que representa el margen de seguridad que tendrá el hash 
+por defecto es 10, pero le colocaremos 14
+
+retornaremos 
+string(bytes) -> que es el paso reverso despues del hasheo
+err -> que nos mostrará error si no se lográ ejecutar correctamente
+
+#2 Función CheckPasswordHash
+Esta función compara la contraseña hasheada y la constraseña generada
+convirtiendolos en un slice de bytes, 
+si coinciden devolverá true
+caso contrario devolvera nil( valor 0)
+
+## Este generador de contraseñas encriptadas solo permite generar una constraseña
+encriptada de 60 caracteres, no se permite cambiar la longitud del hash, debido 
+a que rompería la estructura interna.
+
+package main
+
+import (
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
+func main() {
+	fmt.Println("--- Password Generate ---")
+
+	password := "contraseña123"
+	hash, _ := HashPassword(password)
+	// ignoramos el error usando el identificador blank
+	// para efectos de simplicidad
+	fmt.Println("Contraseña   : ", password)
+	fmt.Println("Hash         : ", hash)
+	fmt.Println("Caracteres   : ", len(hash))
+
+	match := CheckPasswordHash(password, hash)
+	fmt.Println("Coincidencia : ", match)
+
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
